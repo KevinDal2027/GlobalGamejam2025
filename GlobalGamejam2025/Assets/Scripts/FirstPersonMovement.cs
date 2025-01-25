@@ -22,6 +22,9 @@ public class FirstPersonMovement : MonoBehaviour
     public float slideHeight = 1f;  // Height of the character when sliding
     public float slideCameraOffsetY = -0.5f; // Camera offset when sliding
 
+    public float bubbleSolutionAmount = 10f; // Total amount of bubble solution available
+    public float bubbleConsumptionRate = 1f; // Rate at which bubble solution is consumed per second
+
     Vector3 velocity;
     Vector3 slideDirection;
     bool isGrounded;
@@ -99,7 +102,7 @@ public class FirstPersonMovement : MonoBehaviour
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
             }
-            else if (!isInBubble)
+            else if (!isInBubble && bubbleSolutionAmount > 0)
             {
                 isInBubble = true; // Activate bubble
             }
@@ -108,6 +111,12 @@ public class FirstPersonMovement : MonoBehaviour
         if (isInBubble)
         {
             velocity.y += bubbleGravity * Time.deltaTime; // Slow descent in bubble
+            bubbleSolutionAmount -= bubbleConsumptionRate * Time.deltaTime; // Consume bubble solution
+
+            if (bubbleSolutionAmount <= 0)
+            {
+                isInBubble = false; // Deactivate bubble if solution runs out
+            }
         }
         else
         {
