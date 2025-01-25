@@ -93,4 +93,20 @@ public class FirstPersonMovement : MonoBehaviour
 
         characterController.Move(velocity * Time.deltaTime);
     }
+
+    public float GetCurrentPlayerSpeed()
+    {
+        if (isSliding)
+        {
+            return slideSpeed;
+        }
+        else
+        {
+            float x = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical");
+            Vector3 move = transform.right * x + transform.forward * z;
+            return move.magnitude * speed;
+
+        }
+    }
 }
