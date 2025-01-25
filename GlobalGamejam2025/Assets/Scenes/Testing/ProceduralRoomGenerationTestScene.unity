@@ -712,7 +712,7 @@ MonoBehaviour:
   roomPrefabs:
   - {fileID: 5428959551806385805, guid: 14eb66e15783c1186809b234a4f47e92, type: 3}
   - {fileID: 5282188542858848267, guid: 6fae405ccd021c6988e1793d0d3c21bd, type: 3}
-  - {fileID: 629995136601157518, guid: a0645b0f6747b80bc81a516cddaaccfe, type: 3}
+  - {fileID: 629995136601157518, guid: 2d175311a208d92e4b8b2fc7e6ccf759, type: 3}
   roomsAhead: 3
   player: {fileID: 496389229}
 --- !u!4 &534496087
