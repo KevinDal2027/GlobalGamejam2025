@@ -6,10 +6,10 @@ public class FirstPersonMovement : MonoBehaviour
 {
     CharacterController characterController;
     public float speed = 12f;
-    public float gravity = -9.81f;
-    public float jumpHeight = 3f;
-    public float slideSpeed = 6f;
-    public float slideDeceleration = 0.5f; // Rate at which speed decreases during sliding
+    public float gravity = -12f;
+    public float jumpHeight = 4f;
+    public float slideSpeed = 12f; // Sliding speed, should be less than or equal to running speed
+    public float slideDeceleration = 5f; // Rate at which speed decreases during sliding
     public float fastDescentGravity = -20f; // Gravity when sliding in the air
     public float bubbleGravity = -2f; // Gravity when floating in the bubble
     public Transform groundCheck;
@@ -17,6 +17,7 @@ public class FirstPersonMovement : MonoBehaviour
     public LayerMask groundMask;
 
     Vector3 velocity;
+    Vector3 slideDirection;
     bool isGrounded;
     bool isSliding = false;
     bool isInBubble = false;
@@ -41,17 +42,21 @@ public class FirstPersonMovement : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
-        characterController.Move(move * speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (isGrounded)
+            if (!isSliding)
             {
+                // Capture the direction when sliding starts
+                slideDirection = move.normalized;
                 isSliding = true;
-                characterController.Move(move * slideSpeed * Time.deltaTime);
-                slideSpeed = Mathf.Max(0, slideSpeed - slideDeceleration * Time.deltaTime); // Gradually reduce speed
             }
-            else
+
+            // Move in the captured slide direction
+            characterController.Move(slideDirection * slideSpeed * Time.deltaTime);
+            slideSpeed = Mathf.Max(0, slideSpeed - slideDeceleration * Time.deltaTime); // Gradually reduce speed
+
+            if (!isGrounded)
             {
                 isInBubble = false; // Pop the bubble if in the air
                 velocity.y = fastDescentGravity; // Fast descent when sliding in the air
@@ -60,7 +65,8 @@ public class FirstPersonMovement : MonoBehaviour
         else
         {
             isSliding = false;
-            slideSpeed = 6f; // Reset slide speed when not sliding
+            slideSpeed = 12f; // Reset slide speed when not sliding
+            characterController.Move(move * speed * Time.deltaTime); // Allow normal movement
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
