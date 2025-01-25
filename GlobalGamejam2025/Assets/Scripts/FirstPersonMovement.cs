@@ -14,8 +14,13 @@ public class FirstPersonMovement : MonoBehaviour
     public float fastDescentGravity = -20f; // Gravity when sliding in the air
     public float bubbleGravity = -2f; // Gravity when floating in the bubble
     public Transform groundCheck;
+    public Camera mainCamera;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
+
+    public float normalHeight = 2f; // Normal height of the character
+    public float slideHeight = 1f;  // Height of the character when sliding
+    public float slideCameraOffsetY = -0.5f; // Camera offset when sliding
 
     Vector3 velocity;
     Vector3 slideDirection;
@@ -23,9 +28,12 @@ public class FirstPersonMovement : MonoBehaviour
     bool isSliding = false;
     bool isInBubble = false;
 
+    private Vector3 originalCameraPosition;
+
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+        originalCameraPosition = mainCamera.transform.localPosition;
     }
 
     // Update is called once per frame
@@ -51,6 +59,12 @@ public class FirstPersonMovement : MonoBehaviour
                 // Capture the direction when sliding starts
                 slideDirection = move.normalized;
                 isSliding = true;
+
+                // Adjust the character controller for sliding
+                characterController.height = slideHeight;
+
+                // Adjust camera position
+                mainCamera.transform.localPosition = new Vector3(originalCameraPosition.x, originalCameraPosition.y + slideCameraOffsetY, originalCameraPosition.z);
             }
 
             // Move in the captured slide direction
@@ -65,6 +79,15 @@ public class FirstPersonMovement : MonoBehaviour
         }
         else
         {
+            if (isSliding)
+            {
+                // Reset the character controller to normal height
+                characterController.height = normalHeight;
+
+                // Reset camera position
+                mainCamera.transform.localPosition = originalCameraPosition;
+            }
+
             isSliding = false;
             slideSpeed = initialSlideSpeed; // Reset slide speed when not sliding
             characterController.Move(move * speed * Time.deltaTime); // Allow normal movement
@@ -106,7 +129,6 @@ public class FirstPersonMovement : MonoBehaviour
             float z = Input.GetAxis("Vertical");
             Vector3 move = transform.right * x + transform.forward * z;
             return move.magnitude * speed;
-
         }
     }
 }
