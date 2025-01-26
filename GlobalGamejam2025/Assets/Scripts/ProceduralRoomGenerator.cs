@@ -4,8 +4,9 @@ using UnityEngine;
 public class ProceduralRoomGenerator : MonoBehaviour
 {
     public static ProceduralRoomGenerator Instance { get; private set; }
-
-    public GameObject[] roomPrefabs;  // Array of room prefabs to choose from
+    public GameObject[] straightRooms;
+    public GameObject[] leftRooms;
+    public GameObject[] rightRooms;
     public int roomsAhead = 3;        // Number of rooms to generate ahead of the player
     public Transform player;          // Reference to the player transform
 
@@ -50,8 +51,31 @@ public class ProceduralRoomGenerator : MonoBehaviour
             Transform lastExitPoint = lastRoomScript.exitPoint;
 
             // Choose a random room prefab and instantiate it
-            int roomIndex = Random.Range(0, roomPrefabs.Length);
-            GameObject newRoom = Instantiate(roomPrefabs[roomIndex], Vector3.zero, Quaternion.identity);
+            int roomTypeIndex = Random.Range(0, 3);
+            int roomIndex;
+            GameObject newRoom;
+            //Straight room
+            if (roomTypeIndex == 0)
+            {
+                roomIndex = Random.Range(0, straightRooms.Length);
+                newRoom = Instantiate(straightRooms[roomIndex], Vector3.zero, Quaternion.identity);
+            }
+            
+            //Left room
+            else if (roomTypeIndex == 1)
+            {
+                roomIndex = Random.Range(0, leftRooms.Length);
+                newRoom = Instantiate(leftRooms[roomIndex], Vector3.zero, Quaternion.identity);
+            }
+            
+            //Right room
+            else
+            {
+                roomIndex = Random.Range(0, rightRooms.Length);
+                newRoom = Instantiate(rightRooms[roomIndex], Vector3.zero, Quaternion.identity);
+            }
+
+            
             ProceduralRoom newRoomScript = newRoom.GetComponent<ProceduralRoom>();
 
             // Calculate the position offset to align the new room's entry point with the last room's exit point
@@ -60,12 +84,12 @@ public class ProceduralRoomGenerator : MonoBehaviour
 
             // Determine the rotation based on the type of room
             float rotationOffset = 0f;
-            if (roomIndex == 1)
+            if (roomTypeIndex == 1)
             {
                 // Turn left (90 degrees counterclockwise)
                 rotationOffset = -90f;
             }
-            else if (roomIndex == 2)
+            else if (roomTypeIndex == 2)
             {
                 // Turn right (90 degrees clockwise)
                 rotationOffset = 90f;
@@ -92,7 +116,7 @@ public class ProceduralRoomGenerator : MonoBehaviour
         else
         {
             // If no rooms are active, just instantiate the first room at the origin
-            GameObject firstRoom = Instantiate(roomPrefabs[0], Vector3.zero, Quaternion.identity);
+            GameObject firstRoom = Instantiate(straightRooms[0], Vector3.zero, Quaternion.identity);
             firstRoom.GetComponent<ProceduralRoom>().InitializeRoom();
             activeRooms.Enqueue(firstRoom);
         }
