@@ -7,9 +7,11 @@ public class ProceduralRoomGenerator : MonoBehaviour
     public GameObject[] straightRooms;
     public GameObject[] leftRooms;
     public GameObject[] rightRooms;
+    public GameObject endRoom;
     public int roomsAhead = 3;        // Number of rooms to generate ahead of the player
     public Transform player;          // Reference to the player transform
-
+    public int numRoomsBeforeEndRoom = 10;
+    private int currRoom = 0;
     private Queue<GameObject> activeRooms = new Queue<GameObject>();  // Queue to track active rooms
     private float cumulativeRotation = 0f;  // Track the total rotation applied to the rooms
 
@@ -36,7 +38,7 @@ public class ProceduralRoomGenerator : MonoBehaviour
 
     public void OnPlayerEnterDoor()
     {
-        // Generate a new room and remove the oldest one
+        // Generate a new room
         GenerateRoom();
     }
 
@@ -54,28 +56,36 @@ public class ProceduralRoomGenerator : MonoBehaviour
             int roomTypeIndex = Random.Range(0, 3);
             int roomIndex;
             GameObject newRoom;
-            //Straight room
+
+            if (currRoom == numRoomsBeforeEndRoom)
+            {
+                roomTypeIndex = 3;
+            }
+            
+            // Straight room
             if (roomTypeIndex == 0)
             {
                 roomIndex = Random.Range(0, straightRooms.Length);
                 newRoom = Instantiate(straightRooms[roomIndex], Vector3.zero, Quaternion.identity);
             }
-            
-            //Left room
+            // Left room
             else if (roomTypeIndex == 1)
             {
                 roomIndex = Random.Range(0, leftRooms.Length);
                 newRoom = Instantiate(leftRooms[roomIndex], Vector3.zero, Quaternion.identity);
             }
-            
-            //Right room
-            else
+            // Right room
+            else if (roomTypeIndex == 2)
             {
                 roomIndex = Random.Range(0, rightRooms.Length);
                 newRoom = Instantiate(rightRooms[roomIndex], Vector3.zero, Quaternion.identity);
             }
+            // End room
+            else
+            {
+                newRoom = Instantiate(endRoom, Vector3.zero, Quaternion.identity);
+            }
 
-            
             ProceduralRoom newRoomScript = newRoom.GetComponent<ProceduralRoom>();
 
             // Calculate the position offset to align the new room's entry point with the last room's exit point
@@ -106,8 +116,8 @@ public class ProceduralRoomGenerator : MonoBehaviour
             // Add the new room to the queue
             activeRooms.Enqueue(newRoom);
 
-            // Remove the oldest room if we have more than the required number of rooms
-            if (activeRooms.Count > roomsAhead)
+            // Remove the room that is two rooms behind the player
+            if (activeRooms.Count > roomsAhead + 2)
             {
                 GameObject oldRoom = activeRooms.Dequeue();
                 Destroy(oldRoom);
@@ -120,5 +130,6 @@ public class ProceduralRoomGenerator : MonoBehaviour
             firstRoom.GetComponent<ProceduralRoom>().InitializeRoom();
             activeRooms.Enqueue(firstRoom);
         }
+        currRoom++;
     }
 }

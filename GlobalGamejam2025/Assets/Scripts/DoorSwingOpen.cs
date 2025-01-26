@@ -4,12 +4,13 @@ public class DoorSwingOpen : MonoBehaviour
 {
     public Transform player; // Reference to the player's transform
     public float openDistance = 5f; // Distance at which the door should open
-    private Animation animation; // Reference to the Animator component
-
+    private Animator animator; // Reference to the Animator component
+    private bool doorOpen = false;
+    
     private void Start()
     {
         // Get the Animator component attached to the door
-        animation = GetComponent<Animation>();
+        animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
@@ -17,12 +18,13 @@ public class DoorSwingOpen : MonoBehaviour
     {
         // Calculate the distance between the player and the door
         float distanceToPlayer = Vector3.Distance(player.position, transform.position);
-
+        print(distanceToPlayer);
         // Check if the player is within the specified distance
-        if (distanceToPlayer <= openDistance)
+        if (distanceToPlayer <= openDistance && !doorOpen)
         {
             // Play the door open animation
-            animation.Play();
+            animator.SetTrigger("OpenDoor");
+            doorOpen = true;
         }
     }
 }

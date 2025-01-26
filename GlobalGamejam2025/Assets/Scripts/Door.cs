@@ -8,6 +8,7 @@ public class Door : MonoBehaviour
         {
             // Notify the ProceduralRoomGenerator to generate new rooms
             ProceduralRoomGenerator.Instance.OnPlayerEnterDoor();
+            Destroy(gameObject);
         }
     }
 }
