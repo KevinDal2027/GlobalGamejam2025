@@ -38,13 +38,12 @@ public class ProceduralRoomGenerator : MonoBehaviour
 
     public void OnPlayerEnterDoor()
     {
-        // Generate a new room and remove the oldest one
+        // Generate a new room
         GenerateRoom();
     }
 
     private void GenerateRoom()
     {
-
         if (activeRooms.Count > 0)
         {
             GameObject lastRoom = activeRooms.ToArray()[activeRooms.Count - 1];
@@ -63,28 +62,25 @@ public class ProceduralRoomGenerator : MonoBehaviour
                 roomTypeIndex = 3;
             }
             
-            //Straight room
+            // Straight room
             if (roomTypeIndex == 0)
             {
                 roomIndex = Random.Range(0, straightRooms.Length);
                 newRoom = Instantiate(straightRooms[roomIndex], Vector3.zero, Quaternion.identity);
             }
-            
-            //Left room
+            // Left room
             else if (roomTypeIndex == 1)
             {
                 roomIndex = Random.Range(0, leftRooms.Length);
                 newRoom = Instantiate(leftRooms[roomIndex], Vector3.zero, Quaternion.identity);
             }
-            
-            //Right room
-            else if(roomTypeIndex == 2)
+            // Right room
+            else if (roomTypeIndex == 2)
             {
                 roomIndex = Random.Range(0, rightRooms.Length);
                 newRoom = Instantiate(rightRooms[roomIndex], Vector3.zero, Quaternion.identity);
             }
-
-            //If it's something else, we generated the end room
+            // End room
             else
             {
                 newRoom = Instantiate(endRoom, Vector3.zero, Quaternion.identity);
@@ -120,8 +116,8 @@ public class ProceduralRoomGenerator : MonoBehaviour
             // Add the new room to the queue
             activeRooms.Enqueue(newRoom);
 
-            // Remove the oldest room if we have more than the required number of rooms
-            if (activeRooms.Count > roomsAhead)
+            // Remove the room that is two rooms behind the player
+            if (activeRooms.Count > roomsAhead + 2)
             {
                 GameObject oldRoom = activeRooms.Dequeue();
                 Destroy(oldRoom);
