@@ -24,6 +24,7 @@ public class FirstPersonMovement : MonoBehaviour
 
     public float bubbleSolutionAmount = 10f; // Total amount of bubble solution available
     public float bubbleConsumptionRate = 1f; // Rate at which bubble solution is consumed per second
+	public GameObject bubble;
 
     Vector3 velocity;
     Vector3 slideDirection;
@@ -48,6 +49,7 @@ public class FirstPersonMovement : MonoBehaviour
         {
             velocity.y = -2f;
             isInBubble = false; // Reset bubble state when grounded
+			bubble.SetActive(false);
         }
 
         float x = Input.GetAxis("Horizontal");
@@ -77,6 +79,7 @@ public class FirstPersonMovement : MonoBehaviour
             if (!isGrounded)
             {
                 isInBubble = false; // Pop the bubble if in the air
+				bubble.SetActive(false);
                 velocity.y = fastDescentGravity; // Fast descent when sliding in the air
             }
         }
@@ -105,6 +108,7 @@ public class FirstPersonMovement : MonoBehaviour
             else if (!isInBubble && bubbleSolutionAmount > 0)
             {
                 isInBubble = true; // Activate bubble
+				bubble.SetActive(true);
             }
         }
 
@@ -116,6 +120,7 @@ public class FirstPersonMovement : MonoBehaviour
             if (bubbleSolutionAmount <= 0)
             {
                 isInBubble = false; // Deactivate bubble if solution runs out
+				bubble.SetActive(false);
             }
         }
         else
