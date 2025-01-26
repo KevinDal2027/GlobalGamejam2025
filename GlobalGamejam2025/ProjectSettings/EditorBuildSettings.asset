@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainLevel/InfiniteScroll.unity
     guid: 266af108f656b3f6ba3f4c93751c1776
+  - enabled: 1
+    path: Assets/Scenes/MainLevel/EndScreen.unity
+    guid: a0583c442e16e5791884771b61660da0
   m_configObjects: {}

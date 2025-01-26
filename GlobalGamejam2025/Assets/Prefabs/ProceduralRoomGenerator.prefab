@@ -64,5 +64,7 @@ MonoBehaviour:
   - {fileID: 629995136601157518, guid: 2d175311a208d92e4b8b2fc7e6ccf759, type: 3}
   - {fileID: 629995136601157518, guid: 9f0761763a1e57df6977dffca1bc214f, type: 3}
   - {fileID: 629995136601157518, guid: 2ae4da1b15c594294bb419b84643b901, type: 3}
+  endRoom: {fileID: 5428959551806385805, guid: 1df7b1dae8d552116aa7bdb604a530b7, type: 3}
   roomsAhead: 3
   player: {fileID: 0}
+  numRoomsBeforeEndRoom: 10

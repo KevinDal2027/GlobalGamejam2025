@@ -7,9 +7,11 @@ public class ProceduralRoomGenerator : MonoBehaviour
     public GameObject[] straightRooms;
     public GameObject[] leftRooms;
     public GameObject[] rightRooms;
+    public GameObject endRoom;
     public int roomsAhead = 3;        // Number of rooms to generate ahead of the player
     public Transform player;          // Reference to the player transform
-
+    public int numRoomsBeforeEndRoom = 10;
+    private int currRoom = 0;
     private Queue<GameObject> activeRooms = new Queue<GameObject>();  // Queue to track active rooms
     private float cumulativeRotation = 0f;  // Track the total rotation applied to the rooms
 
@@ -42,6 +44,7 @@ public class ProceduralRoomGenerator : MonoBehaviour
 
     private void GenerateRoom()
     {
+
         if (activeRooms.Count > 0)
         {
             GameObject lastRoom = activeRooms.ToArray()[activeRooms.Count - 1];
@@ -54,6 +57,12 @@ public class ProceduralRoomGenerator : MonoBehaviour
             int roomTypeIndex = Random.Range(0, 3);
             int roomIndex;
             GameObject newRoom;
+
+            if (currRoom == numRoomsBeforeEndRoom)
+            {
+                roomTypeIndex = 3;
+            }
+            
             //Straight room
             if (roomTypeIndex == 0)
             {
@@ -69,13 +78,18 @@ public class ProceduralRoomGenerator : MonoBehaviour
             }
             
             //Right room
-            else
+            else if(roomTypeIndex == 2)
             {
                 roomIndex = Random.Range(0, rightRooms.Length);
                 newRoom = Instantiate(rightRooms[roomIndex], Vector3.zero, Quaternion.identity);
             }
 
-            
+            //If it's something else, we generated the end room
+            else
+            {
+                newRoom = Instantiate(endRoom, Vector3.zero, Quaternion.identity);
+            }
+
             ProceduralRoom newRoomScript = newRoom.GetComponent<ProceduralRoom>();
 
             // Calculate the position offset to align the new room's entry point with the last room's exit point
@@ -120,5 +134,6 @@ public class ProceduralRoomGenerator : MonoBehaviour
             firstRoom.GetComponent<ProceduralRoom>().InitializeRoom();
             activeRooms.Enqueue(firstRoom);
         }
+        currRoom++;
     }
 }
