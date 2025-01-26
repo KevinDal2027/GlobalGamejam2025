@@ -29,15 +29,23 @@ public class FirstPersonMovement : MonoBehaviour
     Vector3 velocity;
     Vector3 slideDirection;
     bool isGrounded;
+    private bool isRunning;
     bool isSliding = false;
     bool isInBubble = false;
-
+    private AudioSource audioSource;
+    public AudioSource audioSource2;
+    public AudioClip slidingClip;
+    public AudioClip runningClip;
+    public AudioClip bubbleBlowClip;
+    public AudioClip bubblePopClip;
+    
     private Vector3 originalCameraPosition;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
         originalCameraPosition = mainCamera.transform.localPosition;
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -45,17 +53,26 @@ public class FirstPersonMovement : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (isGrounded && velocity.y < 0)
+        if (isGrounded && velocity.y < 0 && isInBubble)
         {
             velocity.y = -2f;
             isInBubble = false; // Reset bubble state when grounded
 			bubble.SetActive(false);
+            audioSource2.PlayOneShot(bubblePopClip);
         }
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
+
+        if (move.magnitude >= 0 && !(isInBubble) && !(isSliding) && (isGrounded))
+        {
+            print("Something");
+            isRunning = true;
+            isSliding = false;
+            PlaySound(runningClip);
+        }
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -64,7 +81,8 @@ public class FirstPersonMovement : MonoBehaviour
                 // Capture the direction when sliding starts
                 slideDirection = move.normalized;
                 isSliding = true;
-
+                PlaySound(slidingClip);
+                isRunning = false;
                 // Adjust the character controller for sliding
                 characterController.height = slideHeight;
 
@@ -76,10 +94,11 @@ public class FirstPersonMovement : MonoBehaviour
             characterController.Move(slideDirection * slideSpeed * Time.deltaTime);
             slideSpeed = Mathf.Max(0, slideSpeed - slideDeceleration * Time.deltaTime); // Gradually reduce speed
 
-            if (!isGrounded)
+            if (!isGrounded && isInBubble)
             {
                 isInBubble = false; // Pop the bubble if in the air
 				bubble.SetActive(false);
+                audioSource2.PlayOneShot(bubblePopClip);
                 velocity.y = fastDescentGravity; // Fast descent when sliding in the air
             }
         }
@@ -87,6 +106,7 @@ public class FirstPersonMovement : MonoBehaviour
         {
             if (isSliding)
             {
+                isRunning = true;
                 // Reset the character controller to normal height
                 characterController.height = normalHeight;
 
@@ -99,6 +119,11 @@ public class FirstPersonMovement : MonoBehaviour
             characterController.Move(move * speed * Time.deltaTime); // Allow normal movement
         }
 
+        if (!(isRunning) && !(isSliding))
+        {
+            audioSource.clip = null;
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isGrounded)
@@ -108,8 +133,10 @@ public class FirstPersonMovement : MonoBehaviour
             else if (!isInBubble && bubbleSolutionAmount > 0)
             {
                 isInBubble = true; // Activate bubble
+                audioSource2.PlayOneShot(bubbleBlowClip);
 				bubble.SetActive(true);
             }
+            audioSource.clip = null;
         }
 
         if (isInBubble)
@@ -120,6 +147,7 @@ public class FirstPersonMovement : MonoBehaviour
             if (bubbleSolutionAmount <= 0)
             {
                 isInBubble = false; // Deactivate bubble if solution runs out
+                audioSource2.PlayOneShot(bubblePopClip);
 				bubble.SetActive(false);
             }
         }
@@ -143,6 +171,16 @@ public class FirstPersonMovement : MonoBehaviour
             float z = Input.GetAxis("Vertical");
             Vector3 move = transform.right * x + transform.forward * z;
             return move.magnitude * speed;
+        }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource.clip != clip || !audioSource.isPlaying)
+        {
+            audioSource.clip = clip;
+            audioSource.loop = clip == runningClip || clip == slidingClip;
+            audioSource.Play();
         }
     }
 }
