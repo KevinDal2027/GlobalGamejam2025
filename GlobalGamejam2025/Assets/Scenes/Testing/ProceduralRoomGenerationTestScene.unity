@@ -1773,6 +1773,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 899467881680673957}
+    - target: {fileID: 5892308023645336409, guid: 7217f0cea859ffecfb49271fd857dfd5, type: 3}
+      propertyPath: endRoom
+      value: 
+      objectReference: {fileID: 5428959551806385805, guid: 1df7b1dae8d552116aa7bdb604a530b7, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
