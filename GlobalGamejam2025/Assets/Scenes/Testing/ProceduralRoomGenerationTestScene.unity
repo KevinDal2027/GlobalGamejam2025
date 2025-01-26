@@ -709,10 +709,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 817fb6d697cfa9d4c8e1eaffe17e8e64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomPrefabs:
+  straightRooms:
   - {fileID: 5428959551806385805, guid: 14eb66e15783c1186809b234a4f47e92, type: 3}
-  - {fileID: 5282188542858848267, guid: 6fae405ccd021c6988e1793d0d3c21bd, type: 3}
+  leftRooms:
+  - {fileID: 5282188542858848267, guid: 5a5b37d996bbfb72f9f334fa3b6bbcff, type: 3}
+  - {fileID: 5282188542858848267, guid: 2440f13085ad214ba84c9c6d87cd1421, type: 3}
+  - {fileID: 5282188542858848267, guid: fec83a60160f88e4389156da71f3fab9, type: 3}
+  rightRooms:
   - {fileID: 629995136601157518, guid: 2d175311a208d92e4b8b2fc7e6ccf759, type: 3}
+  - {fileID: 629995136601157518, guid: 9f0761763a1e57df6977dffca1bc214f, type: 3}
+  - {fileID: 629995136601157518, guid: 2ae4da1b15c594294bb419b84643b901, type: 3}
   roomsAhead: 3
   player: {fileID: 496389229}
 --- !u!4 &534496087
