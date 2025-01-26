@@ -10,6 +10,7 @@ public class DoorSwingOpen : MonoBehaviour
     {
         // Get the Animator component attached to the door
         animation = GetComponent<Animation>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void Update()
