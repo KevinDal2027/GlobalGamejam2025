@@ -14,6 +14,7 @@ public class EndRoomScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Cursor.lockState = CursorLockMode.None;
         if (other.CompareTag("Player"))
         {
             sceneLoader.LoadScene(2);
